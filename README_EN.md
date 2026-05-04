@@ -275,20 +275,6 @@ dotnet build
 dotnet publish -c Release -r win-x64 --self-contained true
 ```
 
-## CI/CD
-
-This project is configured with a GitHub Actions workflow located at [`.github/workflows/dotnet.yml`](.github/workflows/dotnet.yml).
-
-On every push to the `main` branch or Pull Request, CI will automatically:
-
-1. Check out the code
-2. Set up the .NET 8 environment
-3. Restore NuGet dependencies
-4. Build the project
-5. Run tests (if any)
-
-You can view build status and history on the **Actions** tab of the GitHub repository.
-
 ## Use Cases
 
 - Quickly locate local files
