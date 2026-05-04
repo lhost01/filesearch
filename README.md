@@ -274,19 +274,6 @@ dotnet build
 dotnet publish -c Release -r win-x64 --self-contained true
 ```
 
-## CI/CD
-
-本项目已配置 GitHub Actions 工作流，位于 [`.github/workflows/dotnet.yml`](.github/workflows/dotnet.yml)。
-
-每次推送到 `main` 分支或提交 Pull Request 时，CI 会自动执行：
-
-1. 检出代码
-2. 设置 .NET 8 环境
-3. 还原 NuGet 依赖
-4. 构建项目
-5. 运行测试（如有）
-
-你可以在 GitHub 仓库的 **Actions** 标签页中查看构建状态和历史记录。
 
 ## 适用场景
 
