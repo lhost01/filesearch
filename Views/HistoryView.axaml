@@ -1,0 +1,279 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:全局文件搜索.ViewModels"
+             xmlns:models="using:全局文件搜索.Models"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignWidth="1100"
+             d:DesignHeight="900"
+             x:Class="全局文件搜索.Views.HistoryView"
+             x:DataType="vm:HistoryViewModel">
+
+    <Grid RowDefinitions="Auto,Auto,*" ColumnDefinitions="1.15*,0.85*" Margin="24,20,24,20" ColumnSpacing="16">
+
+        <!-- Header -->
+        <Border Grid.Row="0" Grid.ColumnSpan="2" Classes="glass-card" Padding="24,18" Margin="0,0,0,16">
+            <StackPanel Spacing="4">
+                <TextBlock Text="搜索历史"
+                           FontSize="22"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource StrongTextBrush}" />
+                <TextBlock Text="查看搜索会话，并打开之前手动保存的文件或文件夹"
+                           FontSize="13"
+                           Foreground="{StaticResource SoftTextBrush}" />
+            </StackPanel>
+        </Border>
+
+        <!-- Status + Clear -->
+        <Grid Grid.Row="1" Grid.ColumnSpan="2" ColumnDefinitions="*,Auto" Margin="0,0,0,12">
+            <TextBlock Text="{Binding StatusText}"
+                       FontSize="13"
+                       Foreground="{StaticResource SoftTextBrush}"
+                       VerticalAlignment="Center" />
+            <Button Grid.Column="1"
+                    Command="{Binding ClearHistoryCommand}"
+                    Classes="action ghost"
+                    Content="清空历史"
+                    VerticalAlignment="Center" />
+        </Grid>
+
+        <!-- Empty state -->
+        <Border Grid.Row="2" Grid.ColumnSpan="2"
+                IsVisible="{Binding IsEmpty}"
+                Classes="subtle-card"
+                Padding="40"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            <StackPanel Spacing="10" HorizontalAlignment="Center">
+                <PathIcon Data="{StaticResource EmptyIconGeometry}"
+                          Width="40"
+                          Height="40"
+                          Foreground="{StaticResource SoftTextBrush}"
+                          HorizontalAlignment="Center" />
+                <TextBlock Text="暂无搜索记录"
+                           FontSize="18"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource SoftTextBrush}"
+                           HorizontalAlignment="Center" />
+                <TextBlock Text="进行一次搜索后，记录将显示在这里"
+                           FontSize="13"
+                           Foreground="{StaticResource SoftTextBrush}"
+                           HorizontalAlignment="Center" />
+            </StackPanel>
+        </Border>
+
+        <!-- History List -->
+        <ListBox Grid.Row="2" Grid.Column="0"
+                 ItemsSource="{Binding Entries}"
+                 SelectedItem="{Binding SelectedEntry}"
+                 Classes="result-list"
+                 IsVisible="{Binding IsNotEmpty}"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="models:SearchHistoryEntry">
+                    <Border Classes="result-card" Margin="0,0,0,10">
+                        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto">
+                            <Border Grid.Column="0" Grid.RowSpan="3"
+                                    Width="44" Height="44"
+                                    CornerRadius="10"
+                                    Background="#FFE8F0FE"
+                                    VerticalAlignment="Top"
+                                    Margin="0,0,14,0">
+                                <PathIcon Data="{StaticResource HistoryIconGeometry}"
+                                          Width="20"
+                                          Height="20"
+                                          Foreground="#FF4FACFE"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Center" />
+                            </Border>
+
+                            <Grid Grid.Column="1" Grid.Row="0"
+                                  ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                                <PathIcon Grid.Column="0"
+                                          Data="{StaticResource DriveIconGeometry}"
+                                          Width="18"
+                                          Height="18"
+                                          Foreground="#FF4FACFE"
+                                          VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding ScopeWithQuerySummary}"
+                                           FontSize="15"
+                                           FontWeight="SemiBold"
+                                           Foreground="{StaticResource StrongTextBrush}"
+                                           TextTrimming="CharacterEllipsis" />
+                                <Border Grid.Column="2"
+                                        Background="#FFE8F0FE"
+                                        CornerRadius="999"
+                                        Padding="10,4">
+                                    <TextBlock Text="{Binding StatusText}"
+                                               FontSize="11"
+                                               Foreground="#FF4FACFE" />
+                                </Border>
+                            </Grid>
+
+                            <StackPanel Grid.Column="1" Grid.Row="1"
+                                        Orientation="Horizontal"
+                                        Spacing="10"
+                                        Margin="0,4,0,0">
+                                <TextBlock FontSize="12"
+                                           Foreground="{StaticResource SoftTextBrush}"
+                                           Text="{Binding Timestamp, StringFormat='时间 {}{0:yyyy-MM-dd HH:mm}'}" />
+                                <TextBlock FontSize="12"
+                                           Foreground="{StaticResource SoftTextBrush}"
+                                           Text="{Binding ResultCount, StringFormat='命中 {}{0} 条'}" />
+                                <TextBlock FontSize="12"
+                                           Foreground="{StaticResource SoftTextBrush}"
+                                           Text="{Binding ScannedFiles, StringFormat='扫描 {}{0:N0} 文件'}" />
+                                <TextBlock FontSize="12"
+                                           Foreground="{StaticResource SoftTextBrush}"
+                                           Text="{Binding ElapsedSeconds, StringFormat='耗时 {}{0:0.0} 秒'}" />
+                            </StackPanel>
+
+                            <Grid Grid.Column="1" Grid.Row="2" ColumnDefinitions="*,Auto" Margin="0,6,0,0">
+                                <ItemsControl Grid.Column="0"
+                                              ItemsSource="{Binding SearchedDrives}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Background="#FFF1F5F9"
+                                                    CornerRadius="4"
+                                                    Padding="6,2"
+                                                    Margin="0,0,4,4">
+                                                <TextBlock Text="{Binding}"
+                                           FontSize="12"
+                                           Foreground="{StaticResource SoftTextBrush}"
+                                                />
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding SavedResults.Count, StringFormat='已保存 {}{0} 项'}"
+                                           FontSize="12"
+                                           Foreground="{StaticResource SoftTextBrush}"
+                                           VerticalAlignment="Center"
+                                           Margin="12,0,0,0" />
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Border Grid.Row="2" Grid.Column="1"
+                Classes="subtle-card"
+                Padding="20"
+                IsVisible="{Binding IsNotEmpty}">
+            <Grid RowDefinitions="Auto,*,Auto" RowSpacing="12">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="已保存的文件 / 文件夹"
+                               FontSize="18"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource StrongTextBrush}" />
+                    <TextBlock Text="先在搜索页完成搜索，再把想保留的结果保存到当前历史中"
+                               FontSize="12"
+                               Foreground="{StaticResource SoftTextBrush}" />
+                </StackPanel>
+
+                <Border Grid.Row="1"
+                        IsVisible="{Binding HasNoSavedResults}"
+                        Background="#FFF8FAFC"
+                        BorderBrush="#33CBD5E0"
+                        BorderThickness="1"
+                        CornerRadius="14"
+                        Padding="24">
+                    <StackPanel Spacing="8" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <PathIcon Data="{StaticResource SaveIconGeometry}"
+                                  Width="28"
+                                  Height="28"
+                                  Foreground="{StaticResource SoftTextBrush}"
+                                  HorizontalAlignment="Center" />
+                        <TextBlock Text="当前历史还没有保存项"
+                                   FontSize="15"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource SoftTextBrush}"
+                                   HorizontalAlignment="Center" />
+                        <TextBlock Text="回到搜索页，多选结果后点击“保存选中到历史”"
+                                   FontSize="12"
+                                   Foreground="{StaticResource SoftTextBrush}"
+                                   HorizontalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+
+                <ListBox Grid.Row="1"
+                         ItemsSource="{Binding SavedResults}"
+                         SelectedItem="{Binding SelectedSavedResult}"
+                         Classes="result-list"
+                         IsVisible="{Binding HasSavedResults}"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Classes="result-card" Margin="0,0,0,10">
+                                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto">
+                                    <Border Grid.RowSpan="3"
+                                            Width="42"
+                                            Height="42"
+                                            CornerRadius="10"
+                                            Background="#FFF1F5F9"
+                                            Margin="0,0,12,0">
+                                        <PathIcon Data="{StaticResource SaveIconGeometry}"
+                                                  Width="18"
+                                                  Height="18"
+                                                  Foreground="#FF4FACFE"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center" />
+                                    </Border>
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding Name}"
+                                               FontSize="14"
+                                               FontWeight="SemiBold"
+                                               Foreground="{StaticResource StrongTextBrush}"
+                                               TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Grid.Column="1"
+                                               Grid.Row="1"
+                                               Text="{Binding FullPath}"
+                                               FontSize="12"
+                                               Foreground="{StaticResource SoftTextBrush}"
+                                               TextTrimming="CharacterEllipsis"
+                                               Margin="0,4,0,0" />
+                                    <StackPanel Grid.Column="1"
+                                                Grid.Row="2"
+                                                Orientation="Horizontal"
+                                                Spacing="10"
+                                                Margin="0,8,0,0">
+                                        <TextBlock Text="{Binding TypeText}"
+                                                   FontSize="12"
+                                                   Foreground="{StaticResource SoftTextBrush}" />
+                                        <TextBlock Text="{Binding SizeText, StringFormat='大小 {}{0}'}"
+                                                   FontSize="12"
+                                                   Foreground="{StaticResource SoftTextBrush}" />
+                                        <TextBlock Text="{Binding ModifiedText, StringFormat='修改 {}{0}'}"
+                                                   FontSize="12"
+                                                   Foreground="{StaticResource SoftTextBrush}" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Button Grid.Column="0"
+                            Command="{Binding OpenSavedItemCommand}"
+                            Classes="action"
+                            Content="打开保存项" />
+                    <Button Grid.Column="1"
+                            Command="{Binding OpenSavedItemFolderCommand}"
+                            Classes="action ghost"
+                            Content="打开所在位置" />
+                </Grid>
+            </Grid>
+        </Border>
+
+    </Grid>
+</UserControl>

@@ -1,0 +1,165 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:全局文件搜索.ViewModels"
+        xmlns:views="using:全局文件搜索.Views"
+        xmlns:vlc="clr-namespace:LibVLCSharp.Avalonia;assembly=LibVLCSharp.Avalonia"
+        x:Class="全局文件搜索.Views.MainWindow"
+        Title="全局文件搜索"
+        Width="1500"
+        Height="1000"
+        MinWidth="1300"
+        MinHeight="800"
+        Background="{StaticResource FallbackGradientBrush}"
+        FontFamily="avares://Avalonia.Fonts.Inter/Assets#Inter"
+        Icon="/Assets/avalonia-logo.ico"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid ColumnDefinitions="20,320,*,20" RowDefinitions="20,*,20"
+          Background="Transparent">
+
+        <Rectangle IsHitTestVisible="False"
+                   Grid.ColumnSpan="4"
+                   Grid.RowSpan="3"
+                   Fill="{StaticResource FallbackGradientBrush}" />
+
+        <vlc:VideoView x:Name="BackgroundVideoView"
+                       IsHitTestVisible="False"
+                       Grid.ColumnSpan="4"
+                       Grid.RowSpan="3"
+                       IsVisible="{Binding SettingsPage.HasBackgroundVideo}"
+                       Opacity="{Binding SettingsPage.BackgroundImageOpacity}" />
+
+        <Image IsHitTestVisible="False"
+               Grid.ColumnSpan="4"
+               Grid.RowSpan="3"
+               Source="{Binding SettingsPage.BackgroundImage}"
+               Stretch="UniformToFill"
+               Opacity="{Binding SettingsPage.BackgroundImageOpacity}"
+               IsVisible="{Binding SettingsPage.HasBackgroundImage}" />
+
+        <Rectangle IsHitTestVisible="False"
+                   Grid.ColumnSpan="4"
+                   Grid.RowSpan="3"
+                   Fill="#99F5F7FA" />
+
+        <Border Grid.Column="1" Grid.Row="1"
+                Background="{StaticResource CardBrush}"
+                BorderBrush="{StaticResource CardBorderBrush}"
+                BorderThickness="1"
+                CornerRadius="20">
+            <Grid RowDefinitions="Auto,*" Margin="0">
+                <Border Grid.Row="0" Padding="24,24,24,16"
+                        Background="Transparent">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Border Width="44" Height="44"
+                                CornerRadius="22"
+                                Background="{StaticResource SubtleCardBrush}"
+                                BorderBrush="#334FACFE"
+                                BorderThickness="1">
+                            <Grid Width="24" Height="24"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center">
+                                <Ellipse Width="24" Height="24"
+                                         Fill="#144FACFE" />
+                                <Ellipse Width="18" Height="18"
+                                         Stroke="#664FACFE"
+                                         StrokeThickness="1.2" />
+                                <PathIcon Data="{StaticResource SearchIconGeometry}"
+                                          Width="12"
+                                          Height="12"
+                                          Foreground="#FF4FACFE" />
+                                <Ellipse Width="4" Height="4"
+                                         Fill="#FF7B5CFA"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"
+                                         Margin="2,2,0,0" />
+                            </Grid>
+                        </Border>
+                        <StackPanel Grid.Column="1" Margin="14,0,0,0"
+                                    VerticalAlignment="Center">
+                            <TextBlock Text="全局文件搜索"
+                                       FontSize="20"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource StrongTextBrush}" />
+                            <TextBlock Text="快速定位文件与文件夹"
+                                       FontSize="13"
+                                       Foreground="{StaticResource SoftTextBrush}"
+                                       Margin="0,2,0,0" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <ScrollViewer Grid.Row="1">
+                    <StackPanel Margin="12,0,12,12" Spacing="6">
+                        <RadioButton GroupName="PageNav"
+                                     IsChecked="{Binding IsDashboardPageSelected}"
+                                     Classes="nav-item">
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="仪表盘"
+                                           FontSize="16"
+                                           FontWeight="SemiBold" />
+                                <TextBlock Text="概览与统计"
+                                           FontSize="12"
+                                           Foreground="{StaticResource SoftTextBrush}" />
+                            </StackPanel>
+                        </RadioButton>
+                        <RadioButton GroupName="PageNav"
+                                     IsChecked="{Binding IsSearchPageSelected}"
+                                     Classes="nav-item">
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="文件搜索"
+                                           FontSize="16"
+                                           FontWeight="SemiBold" />
+                                <TextBlock Text="全局文件检索"
+                                           FontSize="12"
+                                           Foreground="{StaticResource SoftTextBrush}" />
+                            </StackPanel>
+                        </RadioButton>
+                        <RadioButton GroupName="PageNav"
+                                     IsChecked="{Binding IsHistoryPageSelected}"
+                                     Classes="nav-item">
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="搜索历史"
+                                           FontSize="16"
+                                           FontWeight="SemiBold" />
+                                <TextBlock Text="过往搜索记录"
+                                           FontSize="12"
+                                           Foreground="{StaticResource SoftTextBrush}" />
+                            </StackPanel>
+                        </RadioButton>
+                        <RadioButton GroupName="PageNav"
+                                     IsChecked="{Binding IsSettingsPageSelected}"
+                                     Classes="nav-item">
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="设置"
+                                           FontSize="16"
+                                           FontWeight="SemiBold" />
+                                <TextBlock Text="个性化配置"
+                                           FontSize="12"
+                                           Foreground="{StaticResource SoftTextBrush}" />
+                            </StackPanel>
+                        </RadioButton>
+
+                        <Border Height="1"
+                                Background="#1ACBD5E0"
+                                Margin="8,12" />
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+
+        <Border Grid.Column="2" Grid.Row="1"
+                Background="{StaticResource CardBrush}"
+                BorderBrush="{StaticResource CardBorderBrush}"
+                BorderThickness="1"
+                CornerRadius="20"
+                Padding="0"
+                ClipToBounds="True">
+            <TransitioningContentControl Content="{Binding CurrentPage}">
+                <TransitioningContentControl.PageTransition>
+                    <PageSlide Duration="0:0:0.2" Orientation="Horizontal" />
+                </TransitioningContentControl.PageTransition>
+            </TransitioningContentControl>
+        </Border>
+    </Grid>
+</Window>

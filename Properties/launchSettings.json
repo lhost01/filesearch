@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "全局文件搜索 (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "全局文件搜索 (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

@@ -1,0 +1,382 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:全局文件搜索.ViewModels"
+             xmlns:models="using:全局文件搜索.Models"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignWidth="1100"
+             d:DesignHeight="900"
+             x:Class="全局文件搜索.Views.DashboardView"
+             x:DataType="vm:DashboardViewModel">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="24" Margin="32,28,32,28">
+
+            <!-- Header -->
+            <Border Classes="glass-card" Padding="0" ClipToBounds="True">
+                <Grid Height="240" ColumnDefinitions="1.2*,0.8*">
+                    <Border Background="#FF081226" Grid.ColumnSpan="2" />
+                    <Canvas Grid.ColumnSpan="2"
+                            Width="900"
+                            Height="220"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Margin="0,10,0,0"
+                            IsHitTestVisible="False">
+                        <ItemsControl ItemsSource="{Binding Particles}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="models:DashboardParticle">
+                                    <Ellipse Width="{Binding Size}"
+                                             Height="{Binding Size}"
+                                             Opacity="{Binding Opacity}"
+                                             Fill="#88A5B4FC"
+                                             Canvas.Left="{Binding X}"
+                                             Canvas.Top="{Binding Y}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Canvas>
+
+                    <StackPanel Grid.Column="0"
+                                Margin="32,28"
+                                Spacing="10"
+                                VerticalAlignment="Center">
+                        <Border Background="#1AFFFFFF"
+                                CornerRadius="999"
+                                Padding="12,6"
+                                HorizontalAlignment="Left">
+                            <TextBlock Text="DASHBOARD"
+                                       FontSize="11"
+                                       Foreground="#FFD6E4FF" />
+                        </Border>
+                        <TextBlock Text="欢迎使用全局文件搜索"
+                                   FontSize="30"
+                                   FontWeight="SemiBold"
+                                   Foreground="#FFFFFFFF" />
+                        <TextBlock Text="粒子流、动态核心和搜索会话统计都集中在这里"
+                                   FontSize="15"
+                                   Foreground="#FFD6E4FF"
+                                   TextWrapping="Wrap" />
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="10"
+                                    Margin="0,8,0,0">
+                            <Border Background="#1AFFFFFF"
+                                    BorderBrush="#33FFFFFF"
+                                    BorderThickness="1"
+                                    CornerRadius="999"
+                                    Padding="12,6">
+                                <TextBlock Text="实时统计"
+                                           Foreground="#FFFFFFFF"
+                                           FontSize="12" />
+                            </Border>
+                            <Border Background="#1A7B5CFA"
+                                    BorderBrush="#337B5CFA"
+                                    BorderThickness="1"
+                                    CornerRadius="999"
+                                    Padding="12,6">
+                                <TextBlock Text="轻量动效"
+                                           Foreground="#FFFFFFFF"
+                                           FontSize="12" />
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <Grid Grid.Column="1" Margin="24" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Ellipse Width="180"
+                                 Height="180"
+                                 Fill="#1438BDF8"
+                                 Stroke="#225EEAD4"
+                                 StrokeThickness="1" />
+                        <Ellipse Width="170"
+                                 Height="58"
+                                 Fill="#1022D3EE"
+                                 VerticalAlignment="Bottom"
+                                 Margin="0,0,0,18" />
+                        <Border Width="158"
+                                Height="158"
+                                CornerRadius="79"
+                                Background="#2222D3EE"
+                                BorderBrush="#5580D8FF"
+                                BorderThickness="1.5">
+                            <Border.RenderTransform>
+                                <RotateTransform Angle="{Binding RingRotationAngle}" />
+                            </Border.RenderTransform>
+                        </Border>
+                        <Border Width="126"
+                                Height="126"
+                                CornerRadius="63"
+                                Background="#182563EB"
+                                BorderBrush="#66FFFFFF"
+                                BorderThickness="1.5">
+                            <Border.RenderTransform>
+                                <RotateTransform Angle="{Binding CounterRingRotationAngle}" />
+                            </Border.RenderTransform>
+                        </Border>
+                        <Border Width="88"
+                                Height="88"
+                                CornerRadius="44"
+                                Background="#FF4FACFE"
+                                BorderBrush="#99FFFFFF"
+                                BorderThickness="2">
+                            <Border.RenderTransform>
+                                <TransformGroup>
+                                    <RotateTransform Angle="{Binding CoreRotationAngle}" />
+                                    <TranslateTransform Y="{Binding CoreFloatOffset}" />
+                                </TransformGroup>
+                            </Border.RenderTransform>
+                            <PathIcon Data="{StaticResource SearchIconGeometry}"
+                                      Width="30"
+                                      Height="30"
+                                      Foreground="#FFFFFFFF"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                        </Border>
+                        <Border Width="18"
+                                Height="18"
+                                CornerRadius="9"
+                                Background="#FFFFFFFF"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Margin="52,42,0,0">
+                            <Border.RenderTransform>
+                                <RotateTransform Angle="{Binding RingRotationAngle}" />
+                            </Border.RenderTransform>
+                        </Border>
+                        <Border Width="12"
+                                Height="12"
+                                CornerRadius="6"
+                                Background="#FF7B5CFA"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Margin="0,0,56,44">
+                            <Border.RenderTransform>
+                                <RotateTransform Angle="{Binding CounterRingRotationAngle}" />
+                            </Border.RenderTransform>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- Clock Card -->
+            <Border Classes="glass-card" Padding="32,24">
+                <StackPanel Spacing="6" HorizontalAlignment="Center">
+                    <TextBlock Text="{Binding CurrentTime}"
+                               FontSize="42"
+                               FontWeight="Bold"
+                               Foreground="{StaticResource StrongTextBrush}"
+                               HorizontalAlignment="Center" />
+                    <TextBlock Text="{Binding CurrentDate}"
+                               FontSize="18"
+                               Foreground="{StaticResource SoftTextBrush}"
+                               HorizontalAlignment="Center" />
+                </StackPanel>
+            </Border>
+
+            <!-- Stats Row -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="20">
+                <Border Grid.Column="0" Classes="glass-card" Padding="28,24">
+                    <StackPanel Spacing="10" HorizontalAlignment="Center">
+                        <Border Width="56" Height="56"
+                                CornerRadius="28"
+                                Background="#FFE8F0FE"
+                                HorizontalAlignment="Center">
+                            <PathIcon Data="{StaticResource SearchIconGeometry}"
+                                      Width="24"
+                                      Height="24"
+                                      Foreground="#FF4FACFE"
+                                      VerticalAlignment="Center"
+                                      HorizontalAlignment="Center" />
+                        </Border>
+                        <TextBlock Text="累计搜索次数"
+                                   FontSize="14"
+                                   Foreground="{StaticResource SoftTextBrush}"
+                                   HorizontalAlignment="Center" />
+                        <TextBlock Text="{Binding TotalSearchCount}"
+                                   FontSize="36"
+                                   FontWeight="Bold"
+                                   Foreground="#FF4FACFE"
+                                   HorizontalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="1" Classes="glass-card" Padding="28,24">
+                    <StackPanel Spacing="10" HorizontalAlignment="Center">
+                        <Border Width="56" Height="56"
+                                CornerRadius="28"
+                                Background="#FFFEF3E0"
+                                HorizontalAlignment="Center">
+                            <PathIcon Data="{StaticResource TimerIconGeometry}"
+                                      Width="24"
+                                      Height="24"
+                                      Foreground="#FFF59E0B"
+                                      VerticalAlignment="Center"
+                                      HorizontalAlignment="Center" />
+                        </Border>
+                        <TextBlock Text="累计搜索耗时"
+                                   FontSize="14"
+                                   Foreground="{StaticResource SoftTextBrush}"
+                                   HorizontalAlignment="Center" />
+                        <TextBlock Text="{Binding TotalSearchTime}"
+                                   FontSize="24"
+                                   FontWeight="Bold"
+                                   Foreground="#FFF59E0B"
+                                   HorizontalAlignment="Center"
+                                   TextWrapping="Wrap"
+                                   TextAlignment="Center" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Recent Searches -->
+            <Border Classes="glass-card" Padding="28,24">
+                <StackPanel Spacing="16">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                        <PathIcon Data="{StaticResource HistoryIconGeometry}"
+                                  Width="20"
+                                  Height="20"
+                                  Foreground="{StaticResource AccentBrushStrong}"
+                                  VerticalAlignment="Center" />
+                        <StackPanel Grid.Column="1" Spacing="2">
+                            <TextBlock Text="最近搜索"
+                                       FontSize="16"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource StrongTextBrush}" />
+                            <TextBlock Text="展示最近 5 次搜索范围、状态和耗时"
+                                       FontSize="13"
+                                       Foreground="{StaticResource SoftTextBrush}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Border IsVisible="{Binding HasNoRecentEntries}"
+                            Background="#FFF8FAFC"
+                            BorderBrush="#33CBD5E0"
+                            BorderThickness="1"
+                            CornerRadius="14"
+                            Padding="20">
+                        <StackPanel Spacing="8" HorizontalAlignment="Center">
+                            <PathIcon Data="{StaticResource EmptyIconGeometry}"
+                                      Width="28"
+                                      Height="28"
+                                      Foreground="{StaticResource SoftTextBrush}"
+                                      HorizontalAlignment="Center" />
+                            <TextBlock Text="暂无最近搜索"
+                                       FontSize="15"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource SoftTextBrush}"
+                                       HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Border>
+
+                    <ItemsControl ItemsSource="{Binding RecentEntries}"
+                                  IsVisible="{Binding HasRecentEntries}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#FFF8FAFC"
+                                        BorderBrush="#33CBD5E0"
+                                        BorderThickness="1"
+                                        CornerRadius="14"
+                                        Padding="16"
+                                        Margin="0,0,0,10">
+                                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                                        <TextBlock Text="{Binding ScopeWithQuerySummary}"
+                                                   FontSize="14"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource StrongTextBrush}"
+                                                   TextTrimming="CharacterEllipsis" />
+                                        <Border Grid.Column="1"
+                                                Background="#FFE8F0FE"
+                                                CornerRadius="999"
+                                                Padding="10,4">
+                                            <TextBlock Text="{Binding StatusText}"
+                                                       FontSize="11"
+                                                       Foreground="#FF4FACFE" />
+                                        </Border>
+                                        <StackPanel Grid.Row="1"
+                                                    Grid.ColumnSpan="2"
+                                                    Orientation="Horizontal"
+                                                    Spacing="12"
+                                                    Margin="0,8,0,0">
+                                            <TextBlock Text="{Binding ElapsedSeconds, StringFormat='耗时 {}{0:0.0} 秒'}"
+                                                       FontSize="12"
+                                                       Foreground="{StaticResource SoftTextBrush}" />
+                                            <TextBlock Text="{Binding ResultCount, StringFormat='命中 {}{0} 条'}"
+                                                       FontSize="12"
+                                                       Foreground="{StaticResource SoftTextBrush}" />
+                                            <TextBlock Text="{Binding SavedResults.Count, StringFormat='已保存 {}{0} 项'}"
+                                                       FontSize="12"
+                                                       Foreground="{StaticResource SoftTextBrush}" />
+                                            <TextBlock Text="{Binding Timestamp, StringFormat='时间 {}{0:yyyy-MM-dd HH:mm:ss}'}"
+                                                       FontSize="12"
+                                                       Foreground="{StaticResource SoftTextBrush}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <!-- Daily Quote -->
+            <Border Classes="glass-card" Padding="32,28">
+                <StackPanel Spacing="12" HorizontalAlignment="Center">
+                    <TextBlock Text="每日一言"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Foreground="#FF7B5CFA"
+                               HorizontalAlignment="Center" />
+                    <Border Background="#FFF8F7FF"
+                            CornerRadius="12"
+                            Padding="28,20"
+                            HorizontalAlignment="Stretch">
+                        <TextBlock Text="{Binding DailyQuote}"
+                                   FontSize="20"
+                                   FontWeight="Medium"
+                                   Foreground="{StaticResource StrongTextBrush}"
+                                   HorizontalAlignment="Center"
+                                   TextWrapping="Wrap"
+                                   TextAlignment="Center"
+                                   FontStyle="Italic" />
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- Tips -->
+            <Border Classes="subtle-card" Padding="28,24">
+                <StackPanel Spacing="10">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                        <PathIcon Data="{StaticResource InfoIconGeometry}"
+                                  Width="18"
+                                  Height="18"
+                                  Foreground="{StaticResource AccentBrushStrong}"
+                                  VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1"
+                                   Text="使用提示"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource StrongTextBrush}" />
+                    </Grid>
+                    <TextBlock Text="• 在「文件搜索」页面中输入关键词即可开始全局搜索"
+                               FontSize="13"
+                               Foreground="{StaticResource SoftTextBrush}" />
+                    <TextBlock Text="• 搜索完成后可通过文件类型过滤快速筛选结果"
+                               FontSize="13"
+                               Foreground="{StaticResource SoftTextBrush}" />
+                    <TextBlock Text="• 点击「导出结果」可将搜索结果保存为日志文件"
+                               FontSize="13"
+                               Foreground="{StaticResource SoftTextBrush}" />
+                    <TextBlock Text="• 在「搜索历史」页面可查看过往搜索记录"
+                               FontSize="13"
+                               Foreground="{StaticResource SoftTextBrush}" />
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

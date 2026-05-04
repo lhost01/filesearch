@@ -1,0 +1,305 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:全局文件搜索.ViewModels"
+             xmlns:models="using:全局文件搜索.Models"
+             x:Class="全局文件搜索.Views.SearchView"
+             d:DesignWidth="1100"
+             d:DesignHeight="900"
+             mc:Ignorable="d">
+
+    <Design.DataContext>
+        <vm:SearchViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*,Auto" Margin="24,20,24,20">
+
+        <!-- Search Box Row -->
+        <Border Grid.Row="0" Classes="subtle-card" Padding="20" Margin="0,0,0,12">
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                <TextBox Grid.Column="0"
+                         Text="{Binding Query}"
+                         PlaceholderText="输入文件名或关键词搜索..."
+                         Classes="search-box"
+                         KeyDown="OnSearchKeyDown" />
+                <Button Grid.Column="1"
+                        Command="{Binding SearchCommand}"
+                        Classes="action accent"
+                        Content="开始搜索"
+                        Margin="10,0,0,0" />
+                <Button Grid.Column="2"
+                        Command="{Binding StopSearchCommand}"
+                        Classes="action ghost"
+                        Content="停止搜索"
+                        Margin="8,0,0,0" />
+                <Button Grid.Column="3"
+                        Command="{Binding ClearResultsCommand}"
+                        Classes="action ghost"
+                        Content="清空结果"
+                        Margin="8,0,0,0" />
+            </Grid>
+        </Border>
+
+        <!-- Search Options Row -->
+        <Border Grid.Row="1" Classes="subtle-card" Padding="20" Margin="0,0,0,12">
+            <StackPanel Spacing="14">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <TextBlock Text="搜索范围:" FontSize="14" FontWeight="SemiBold"
+                               Foreground="{StaticResource StrongTextBrush}"
+                               VerticalAlignment="Center" Margin="0,0,6,0" />
+                    <ToggleButton IsChecked="{Binding IncludeSystemFiles}"
+                                  Classes="check-chip option-chip"
+                                  Content="系统文件" />
+                    <ToggleButton IsChecked="{Binding IncludeHiddenFiles}"
+                                  Classes="check-chip option-chip"
+                                  Content="隐藏文件" />
+                    <ToggleButton IsChecked="{Binding IncludeFolders}"
+                                  Classes="check-chip option-chip"
+                                  Content="文件夹" />
+                </StackPanel>
+                <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
+                    <TextBlock Grid.Column="0" Text="指定文件夹:" FontSize="14"
+                               Foreground="{StaticResource StrongTextBrush}"
+                               VerticalAlignment="Center" Margin="0,0,10,0" />
+                    <TextBox Grid.Column="1"
+                             Text="{Binding SpecificFolderPath}"
+                             PlaceholderText="留空则搜索所选磁盘..."
+                             Classes="search-box"
+                             MinHeight="40" Padding="12,8" />
+                    <Button Grid.Column="2"
+                            Content="选择文件夹"
+                            Classes="action ghost"
+                            Margin="8,0,0,0"
+                            Click="OnSelectFolderClick" />
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- Drive Selection Row -->
+        <Border Grid.Row="2" Classes="subtle-card" Padding="20" Margin="0,0,0,12">
+            <StackPanel Spacing="12">
+                <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto">
+                    <TextBlock Grid.Column="0" Text="选择磁盘"
+                               FontSize="15" FontWeight="SemiBold"
+                               Foreground="{StaticResource StrongTextBrush}"
+                               VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding SelectedDriveSummary}"
+                               Foreground="{StaticResource SoftTextBrush}"
+                               FontSize="13"
+                               VerticalAlignment="Center"
+                               Margin="12,0,0,0" />
+                    <Button Grid.Column="2"
+                            Command="{Binding SelectAllDrivesCommand}"
+                            Content="全选"
+                            Classes="action ghost"
+                            Margin="0,0,8,0" />
+                    <Button Grid.Column="3"
+                            Command="{Binding InvertDriveSelectionCommand}"
+                            Content="反选"
+                            Classes="action ghost"
+                            Margin="0,0,8,0" />
+                    <Button Grid.Column="4"
+                            Command="{Binding SystemDriveOnlyCommand}"
+                            Content="仅系统盘"
+                            Classes="action ghost" />
+                </Grid>
+                <ItemsControl ItemsSource="{Binding AvailableDrives}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="models:DriveItem">
+                            <ToggleButton IsChecked="{Binding IsSelected}"
+                                          Classes="check-chip drive-chip"
+                                          Content="{Binding DisplayName}"
+                                          Margin="0,0,8,4" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Border>
+
+        <!-- Status Row -->
+        <Border Grid.Row="3" Classes="subtle-card" Padding="20" Margin="0,0,0,12">
+            <StackPanel Spacing="10">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <TextBlock Grid.Column="0"
+                               Text="{Binding StatusText}"
+                               FontSize="13"
+                               Foreground="{StaticResource SoftTextBrush}"
+                               VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="2"
+                               Text="{Binding ResultSummary}"
+                               FontSize="13"
+                               Foreground="{StaticResource SoftTextBrush}"
+                               VerticalAlignment="Center" />
+                </Grid>
+                <ProgressBar IsVisible="{Binding IsSearching}"
+                             Classes="search-progress"
+                             IsIndeterminate="{Binding IsSearching}" />
+                <TextBlock Text="{Binding LastScannedPath, StringFormat='正在扫描: {0}'}"
+                           FontSize="12"
+                           Foreground="{StaticResource SoftTextBrush}"
+                           IsVisible="{Binding IsSearching}" />
+            </StackPanel>
+        </Border>
+
+        <!-- File Type Filter Row -->
+        <Border Grid.Row="4" Classes="subtle-card" Padding="20" Margin="0,0,0,12">
+            <Grid ColumnDefinitions="Auto,Auto,*,Auto">
+                <TextBlock Grid.Column="0" Text="文件类型过滤:"
+                           FontSize="14" FontWeight="SemiBold"
+                           Foreground="{StaticResource StrongTextBrush}"
+                           VerticalAlignment="Center" Margin="0,0,10,0" />
+                <ComboBox Grid.Column="1"
+                          ItemsSource="{Binding AvailableExtensions}"
+                          SelectedItem="{Binding ExtensionFilter}"
+                          MinWidth="160"
+                          VerticalAlignment="Center"
+                          PlaceholderText="全部文件" />
+                <Button Grid.Column="2"
+                        Content="清除过滤"
+                        Classes="action ghost"
+                        Command="{Binding ClearExtensionFilterCommand}"
+                        Margin="10,0,0,0"
+                        VerticalAlignment="Center"
+                        IsVisible="{Binding HasActiveFilter}" />
+                <TextBlock Grid.Column="3"
+                           Text="{Binding Results.Count, StringFormat='显示 {}{0:N0} 条'}"
+                           FontSize="13"
+                           Foreground="{StaticResource SoftTextBrush}"
+                           VerticalAlignment="Center"
+                           Margin="12,0,0,0" />
+            </Grid>
+        </Border>
+
+        <!-- Results List Row -->
+        <ListBox Grid.Row="5"
+                 ItemsSource="{Binding Results}"
+                 SelectedItem="{Binding SelectedResult}"
+                 SelectionMode="Multiple"
+                 Classes="result-list"
+                 SelectionChanged="OnResultsSelectionChanged"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="models:SearchResultItem">
+                    <Border Classes="result-card" Cursor="Hand">
+                        <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto">
+                            <Border Grid.Column="0" Grid.RowSpan="3"
+                                    Width="44" Height="44"
+                                    CornerRadius="10"
+                                    Background="{Binding DisplayIconBrush}"
+                                    VerticalAlignment="Top"
+                                    Margin="0,0,14,0">
+                                <TextBlock Text="{Binding DisplayIcon}"
+                                           FontSize="12"
+                                           FontWeight="Bold"
+                                           Foreground="{StaticResource StrongTextBrush}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center" />
+                            </Border>
+                            <TextBlock Grid.Column="1" Grid.Row="0"
+                                       Text="{Binding Name}"
+                                       FontSize="15"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource StrongTextBrush}"
+                                       TextTrimming="CharacterEllipsis" />
+                            <TextBlock Grid.Column="1" Grid.Row="1"
+                                       Text="{Binding FullPath}"
+                                       FontSize="12"
+                                       Foreground="{StaticResource SoftTextBrush}"
+                                       TextTrimming="CharacterEllipsis"
+                                       Margin="0,4,0,0" />
+                            <StackPanel Grid.Column="1" Grid.Row="2"
+                                        Orientation="Horizontal"
+                                        Spacing="8"
+                                        Margin="0,8,0,0">
+                                <Border Background="#FFE8F0FE"
+                                        CornerRadius="6"
+                                        Padding="8,3">
+                                    <TextBlock Text="{Binding MatchStrengthText}"
+                                               FontSize="11"
+                                               Foreground="#FF4FACFE" />
+                                </Border>
+                                <Border Background="#FFF8FAFC"
+                                        BorderBrush="#33CBD5E0"
+                                        BorderThickness="1"
+                                        CornerRadius="6"
+                                        Padding="8,3">
+                                    <TextBlock Text="{Binding BadgesText}"
+                                               FontSize="11"
+                                               Foreground="{StaticResource SoftTextBrush}" />
+                                </Border>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Grid.RowSpan="3"
+                                        VerticalAlignment="Top"
+                                        HorizontalAlignment="Right"
+                                        Spacing="4"
+                                        Margin="14,0,0,0">
+                                <TextBlock Text="{Binding SizeText}"
+                                           FontSize="12"
+                                           Foreground="{StaticResource SoftTextBrush}"
+                                           HorizontalAlignment="Right" />
+                                <TextBlock Text="{Binding ModifiedText}"
+                                           FontSize="11"
+                                           Foreground="{StaticResource SoftTextBrush}"
+                                           HorizontalAlignment="Right" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <!-- Bottom Action Bar Row -->
+        <Border Grid.Row="6" Classes="subtle-card"
+                Padding="20"
+                Margin="0,12,0,0">
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto">
+                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding SelectedFileInfo}"
+                               FontSize="12"
+                               Foreground="{StaticResource SoftTextBrush}"
+                               TextWrapping="NoWrap" />
+                    <TextBlock Text="{Binding SelectedResultsSummary}"
+                               FontSize="12"
+                               Foreground="{StaticResource SoftTextBrush}"
+                               Margin="0,6,0,0" />
+                </StackPanel>
+                <Button Grid.Column="1"
+                        Command="{Binding SaveSelectedToHistoryCommand}"
+                        Classes="action accent"
+                        Content="保存选中到历史"
+                        Margin="0,0,8,0"
+                        VerticalAlignment="Center" />
+                <Button Grid.Column="2"
+                        Command="{Binding ExportResultsCommand}"
+                        Classes="action ghost"
+                        Content="导出结果"
+                        Margin="0,0,8,0"
+                        VerticalAlignment="Center" />
+                <Button Grid.Column="3"
+                        Command="{Binding OpenFileCommand}"
+                        Classes="action"
+                        Content="打开文件"
+                        Margin="0,0,8,0"
+                        VerticalAlignment="Center" />
+                <Button Grid.Column="4"
+                        Command="{Binding OpenFolderCommand}"
+                        Classes="action"
+                        Content="打开所在文件夹"
+                        Margin="0,0,8,0"
+                        VerticalAlignment="Center" />
+                <Button Grid.Column="5"
+                        Command="{Binding DeleteFileCommand}"
+                        Classes="action danger"
+                        Content="删除"
+                        VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

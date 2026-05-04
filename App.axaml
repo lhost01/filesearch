@@ -1,0 +1,344 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="全局文件搜索.App"
+             xmlns:local="using:全局文件搜索"
+             RequestedThemeVariant="Light">
+
+    <Application.DataTemplates>
+        <local:ViewLocator/>
+    </Application.DataTemplates>
+
+    <Application.Resources>
+        <SolidColorBrush x:Key="WindowBackdropBrush" Color="#FFF5F7FA" />
+        <LinearGradientBrush x:Key="FallbackGradientBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#FFF0F4F8" Offset="0" />
+            <GradientStop Color="#FFE8EEF5" Offset="0.45" />
+            <GradientStop Color="#FFE0E8F0" Offset="1" />
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="CardBrush" Color="#FFFFFFFF" />
+        <SolidColorBrush x:Key="CardBorderBrush" Color="#33CBD5E0" />
+        <SolidColorBrush x:Key="SubtleCardBrush" Color="#FFF8FAFC" />
+        <SolidColorBrush x:Key="AccentBrush" Color="#FF4FACFE" />
+        <SolidColorBrush x:Key="AccentBrushStrong" Color="#FF7B5CFA" />
+        <SolidColorBrush x:Key="SoftTextBrush" Color="#FF64748B" />
+        <SolidColorBrush x:Key="StrongTextBrush" Color="#FF0F172A" />
+        <SolidColorBrush x:Key="SuccessBrush" Color="#FF10B981" />
+        <SolidColorBrush x:Key="DangerBrush" Color="#FFEF4444" />
+        <StreamGeometry x:Key="SearchIconGeometry">M10,2 A8,8 0 1 1 9.999,2 M15.5,15.5 L22,22</StreamGeometry>
+        <StreamGeometry x:Key="TimerIconGeometry">M12,3 L12,5 M9,2 H15 M12,12 L16,14 M12,22 A10,10 0 1 1 12,2.01</StreamGeometry>
+        <StreamGeometry x:Key="HistoryIconGeometry">M12,4 A8,8 0 1 1 4,12 H1 L4,9 M12,8 V12 L15,15</StreamGeometry>
+        <StreamGeometry x:Key="InfoIconGeometry">M12,17 V11 M12,7 H12.01 M12,22 A10,10 0 1 1 12,2.01</StreamGeometry>
+        <StreamGeometry x:Key="EmptyIconGeometry">M3,7 H21 L19,18 H5 Z M9,11 L12,14 L15,11</StreamGeometry>
+        <StreamGeometry x:Key="FolderIconGeometry">M3,6 H9 L11,8 H21 V18 H3 Z</StreamGeometry>
+        <StreamGeometry x:Key="FileIconGeometry">M6,3 H14 L18,7 V21 H6 Z M13,3 V8 H18</StreamGeometry>
+        <StreamGeometry x:Key="SaveIconGeometry">M5,4 H19 V20 H5 Z M8,4 V9 H16 V4 M9,20 V14 H15 V20</StreamGeometry>
+        <StreamGeometry x:Key="DriveIconGeometry">M4,8 H20 V12 H4 Z M6,15 H18 V18 H6 Z</StreamGeometry>
+    </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme />
+
+        <Style Selector="Window">
+            <Setter Property="Background" Value="{StaticResource WindowBackdropBrush}" />
+            <Setter Property="FontFamily" Value="avares://Avalonia.Fonts.Inter/Assets#Inter" />
+        </Style>
+
+        <Style Selector="Border.glass-card">
+            <Setter Property="Background" Value="{StaticResource CardBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="20" />
+            <Setter Property="BoxShadow" Value="0 4 24 0 #1A000000" />
+        </Style>
+
+        <Style Selector="Border.subtle-card">
+            <Setter Property="Background" Value="{StaticResource SubtleCardBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="16" />
+        </Style>
+
+        <Style Selector="Border.result-card">
+            <Setter Property="Background" Value="#FFF8FAFC" />
+            <Setter Property="BorderBrush" Value="#33CBD5E0" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="16" />
+            <Setter Property="Padding" Value="20" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.18" />
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.18" />
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.18" />
+                </Transitions>
+            </Setter>
+            <Setter Property="RenderTransform" Value="translateY(0px)" />
+        </Style>
+
+        <Style Selector="Border.result-card:pointerover">
+            <Setter Property="Background" Value="#FFEFF4F8" />
+            <Setter Property="BorderBrush" Value="#664FACFE" />
+            <Setter Property="RenderTransform" Value="translateY(-2px)" />
+        </Style>
+
+        <Style Selector="TextBlock.hero-title">
+            <Setter Property="FontSize" Value="28" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource StrongTextBrush}" />
+        </Style>
+
+        <Style Selector="TextBlock.section-title">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource StrongTextBrush}" />
+        </Style>
+
+        <Style Selector="TextBlock.caption">
+            <Setter Property="Foreground" Value="{StaticResource SoftTextBrush}" />
+        </Style>
+
+        <Style Selector="Button.action">
+            <Setter Property="Padding" Value="20,14" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Background" Value="#FFF1F5F9" />
+            <Setter Property="BorderBrush" Value="#33CBD5E0" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Foreground" Value="{StaticResource StrongTextBrush}" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.18" />
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.18" />
+                    <DoubleTransition Property="Opacity" Duration="0:0:0.18" />
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.18" />
+                </Transitions>
+            </Setter>
+            <Setter Property="RenderTransform" Value="translateY(0px)" />
+        </Style>
+
+        <Style Selector="Button.action:pointerover">
+            <Setter Property="Background" Value="#FFE2E8F0" />
+            <Setter Property="BorderBrush" Value="#664FACFE" />
+            <Setter Property="RenderTransform" Value="translateY(-2px)" />
+        </Style>
+
+        <Style Selector="Button.action:pressed">
+            <Setter Property="Opacity" Value="0.86" />
+            <Setter Property="RenderTransform" Value="translateY(0px)" />
+        </Style>
+
+        <Style Selector="Button.action.accent">
+            <Setter Property="Background">
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#FF4FACFE" Offset="0" />
+                    <GradientStop Color="#FF7B5CFA" Offset="1" />
+                </LinearGradientBrush>
+            </Setter>
+            <Setter Property="Foreground" Value="#FFFFFFFF" />
+            <Setter Property="BorderBrush" Value="#664FACFE" />
+        </Style>
+
+        <Style Selector="Button.action.danger">
+            <Setter Property="Background" Value="#FFEF4444" />
+            <Setter Property="Foreground" Value="#FFFFFFFF" />
+            <Setter Property="BorderBrush" Value="#66EF4444" />
+        </Style>
+
+        <Style Selector="Button.action.ghost">
+            <Setter Property="Background" Value="#FFF1F5F9" />
+            <Setter Property="BorderBrush" Value="#33CBD5E0" />
+        </Style>
+
+        <Style Selector="RadioButton.nav-item">
+            <Setter Property="MinHeight" Value="72" />
+            <Setter Property="Padding" Value="18,16" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Background" Value="#FFF8FAFC" />
+            <Setter Property="BorderBrush" Value="#33CBD5E0" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="16" />
+            <Setter Property="Foreground" Value="{StaticResource StrongTextBrush}" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border x:Name="RootBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.18" />
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.18" />
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.18" />
+                </Transitions>
+            </Setter>
+            <Setter Property="RenderTransform" Value="translateY(0px)" />
+        </Style>
+
+        <Style Selector="RadioButton.nav-item:pointerover">
+            <Setter Property="Background" Value="#FFEFF4F8" />
+            <Setter Property="BorderBrush" Value="#664FACFE" />
+            <Setter Property="RenderTransform" Value="translateY(-2px)" />
+        </Style>
+
+        <Style Selector="RadioButton.nav-item:checked">
+            <Setter Property="Background">
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#FFE8F0FE" Offset="0" />
+                    <GradientStop Color="#FFE0E8F5" Offset="1" />
+                </LinearGradientBrush>
+            </Setter>
+            <Setter Property="BorderBrush" Value="#664FACFE" />
+        </Style>
+
+        <Style Selector="TextBox.search-box">
+            <Setter Property="MinHeight" Value="48" />
+            <Setter Property="Padding" Value="16,12" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Background" Value="#FFFFFFFF" />
+            <Setter Property="BorderBrush" Value="#33CBD5E0" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="Foreground" Value="{StaticResource StrongTextBrush}" />
+        </Style>
+
+        <Style Selector="ToggleButton.check-chip">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Background" Value="#FFF8FAFC" />
+            <Setter Property="BorderBrush" Value="#33CBD5E0" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="999" />
+            <Setter Property="Foreground" Value="{StaticResource StrongTextBrush}" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                            <Border x:Name="IndicatorBorder"
+                                    Width="18"
+                                    Height="18"
+                                    CornerRadius="9"
+                                    BorderThickness="1.5"
+                                    BorderBrush="#8094A3B8"
+                                    Background="#FFFFFFFF"
+                                    VerticalAlignment="Center">
+                                <TextBlock x:Name="IndicatorCheck"
+                                           Text="✓"
+                                           FontSize="12"
+                                           FontWeight="Bold"
+                                           Foreground="#FFFFFFFF"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           IsVisible="False" />
+                            </Border>
+                            <ContentPresenter Grid.Column="1"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.18" />
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.18" />
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <Style Selector="ToggleButton.check-chip:pointerover">
+            <Setter Property="Background" Value="#FFEFF4F8" />
+            <Setter Property="BorderBrush" Value="#664FACFE" />
+        </Style>
+
+        <Style Selector="ToggleButton.check-chip:checked">
+            <Setter Property="Background" Value="#FFE8F0FE" />
+            <Setter Property="BorderBrush" Value="#664FACFE" />
+        </Style>
+
+        <Style Selector="ToggleButton.check-chip:checked /template/ Border#IndicatorBorder">
+            <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+            <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+        </Style>
+
+        <Style Selector="ToggleButton.check-chip:checked /template/ TextBlock#IndicatorCheck">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+
+        <Style Selector="ToggleButton.option-chip">
+            <Setter Property="Padding" Value="18,10" />
+            <Setter Property="FontSize" Value="14" />
+        </Style>
+
+        <Style Selector="ToggleButton.drive-chip">
+            <Setter Property="Padding" Value="20,12" />
+            <Setter Property="FontSize" Value="13" />
+        </Style>
+
+        <Style Selector="ProgressBar.search-progress">
+            <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+            <Setter Property="Background" Value="#FFE2E8F0" />
+            <Setter Property="Height" Value="6" />
+        </Style>
+
+        <Style Selector="ListBox.result-list">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+
+        <Style Selector="ListBox.result-list > ListBoxItem">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border x:Name="SelectionBorder"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="2"
+                            CornerRadius="18"
+                            Padding="2">
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
+        <Style Selector="ListBox.result-list > ListBoxItem:pointerover /template/ Border#SelectionBorder">
+            <Setter Property="Background" Value="#1A4FACFE" />
+            <Setter Property="BorderBrush" Value="#334FACFE" />
+        </Style>
+
+        <Style Selector="ListBox.result-list > ListBoxItem:selected /template/ Border#SelectionBorder">
+            <Setter Property="Background" Value="#264FACFE" />
+            <Setter Property="BorderBrush" Value="#CC4FACFE" />
+        </Style>
+
+        <Style Selector="ListBox.result-list > ListBoxItem:selected:pointerover /template/ Border#SelectionBorder">
+            <Setter Property="Background" Value="#304FACFE" />
+            <Setter Property="BorderBrush" Value="#FF4FACFE" />
+        </Style>
+    </Application.Styles>
+</Application>

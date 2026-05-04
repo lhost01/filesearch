@@ -1,0 +1,109 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:全局文件搜索.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignWidth="980"
+             d:DesignHeight="760"
+             x:Class="全局文件搜索.Views.SettingsView"
+             x:DataType="vm:SettingsViewModel">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="18">
+            <Border Classes="subtle-card" Padding="20">
+                <StackPanel Spacing="10">
+                    <TextBlock Classes="section-title" Text="背景图与视觉氛围" />
+                    <TextBlock Classes="caption"
+                               Text="你可以给主界面换成本地图片、mp4 视频，Wallpaper Engine 的项目目录 / project.json，或常见的 .mpkg 壁纸包。"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+
+            <Grid ColumnDefinitions="1.1*,0.9*" ColumnSpacing="18">
+                <Border Classes="subtle-card" Padding="20">
+                    <StackPanel Spacing="16">
+                        <TextBlock Classes="section-title" Text="背景图配置" />
+
+                        <TextBlock Classes="caption" Text="背景资源路径" />
+                        <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="12">
+                            <TextBox Classes="search-box"
+                                     Text="{Binding BackgroundImagePath, Mode=TwoWay}"
+                                     PlaceholderText="支持图片 / mp4 / webm / .mpkg / Wallpaper Engine 项目目录或 project.json" />
+                            <Button Grid.Column="1"
+                                    Classes="action accent"
+                                    Click="PickBackground_Click"
+                                    Content="选择文件" />
+                            <Button Grid.Column="2"
+                                    Classes="action ghost"
+                                    Click="PickWallpaperFolder_Click"
+                                    Content="选择目录" />
+                            <Button Grid.Column="3"
+                                    Classes="action ghost"
+                                    Command="{Binding ClearBackgroundImageCommand}"
+                                    Content="恢复默认" />
+                        </Grid>
+
+                        <StackPanel Spacing="8">
+                            <TextBlock FontWeight="SemiBold" Text="背景透明度" />
+                            <Slider Minimum="0"
+                                    Maximum="0.85"
+                                    TickFrequency="0.05"
+                                    Value="{Binding BackgroundImageOpacity, Mode=TwoWay}" />
+                            <TextBlock Classes="caption"
+                                       Text="{Binding BackgroundStatus}"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
+
+                        <StackPanel Spacing="8">
+                            <TextBlock FontWeight="SemiBold" Text="视频背景控制" />
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <ToggleButton Classes="check-chip option-chip"
+                                              Content="播放"
+                                              IsChecked="{Binding BackgroundVideoPlaybackEnabled, Mode=TwoWay}"
+                                              IsEnabled="{Binding CanControlBackgroundVideo}" />
+                                <ToggleButton Classes="check-chip option-chip"
+                                              Content="静音"
+                                              IsChecked="{Binding BackgroundVideoMuted, Mode=TwoWay}"
+                                              IsEnabled="{Binding CanControlBackgroundVideo}" />
+                            </StackPanel>
+                            <TextBlock Classes="caption"
+                                       Text="有视频背景时可用，当前开关状态会自动保存。"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="1" Classes="subtle-card" Padding="20">
+                    <StackPanel Spacing="14">
+                        <TextBlock Classes="section-title" Text="内置增强" />
+                        <Border Classes="glass-card" Padding="16">
+                            <StackPanel Spacing="8">
+                                <TextBlock FontWeight="SemiBold" Text="现代化交互" />
+                                <TextBlock Classes="caption" Text="主按钮悬停、点击都有平滑过渡。" />
+                                <TextBlock Classes="caption" Text="搜索页与设置页切换使用滑动动画。" />
+                            </StackPanel>
+                        </Border>
+
+                        <Border Classes="glass-card" Padding="16">
+                            <StackPanel Spacing="8">
+                                <TextBlock FontWeight="SemiBold" Text="搜索逻辑" />
+                                <TextBlock Classes="caption" Text="自动融合精确包含与模糊匹配，无需手动切换。" />
+                                <TextBlock Classes="caption" Text="默认包含隐藏文件和系统文件。" />
+                            </StackPanel>
+                        </Border>
+
+                        <Border Classes="glass-card" Padding="16">
+                            <StackPanel Spacing="8">
+                                <TextBlock FontWeight="SemiBold" Text="使用建议" />
+                                <TextBlock Classes="caption" Text="全盘搜索可能比较耗时，建议优先勾选目标磁盘。" />
+                                <TextBlock Classes="caption" Text="关键词越具体，排序结果越精准。" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
